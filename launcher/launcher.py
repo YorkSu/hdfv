@@ -6,17 +6,15 @@ Launch HDFV shell with the specified filename.
 """
 
 
-from hdfv.utils.config import config
 from hdfv.utils.flag import flags as F
 from hdfv.utils.parse import Parser
 
 
 class Launcher(Parser):
     def __init__(self):
-        self.config = config.user().get('launcher', dict())
-        self.hello = self.config.get('hello')
+        self.hello = F.user_conf.get('launcher', dict()).get('hello')
 
-    def start(self):
+    def start(self) -> None:
         if self.hello is not None:
             print(self.hello)
         F.launcher_exit = False
@@ -29,7 +27,7 @@ class Launcher(Parser):
                 break
             self.parse(expression)
         
-    def parse(self, expression: str):
+    def parse(self, expression: str) -> None:
         if expression in ['exit']:
             F.launcher_exit = True
         else:
