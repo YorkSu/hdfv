@@ -19,19 +19,19 @@ class Launcher(Parser):
     def start(self):
         if self.hello is not None:
             print(self.hello)
-        F.exit = False
-        while not F.exit:
+        F.launcher_exit = False
+        while not F.launcher_exit:
             try:
                 expression = input('==> ')
             except KeyboardInterrupt:
                 print("\nGot Ctrl+C, exiting")
-                F.exit = True  # Redundant Code
+                F.launcher_exit = True  # Redundant Code
                 break
             self.parse(expression)
         
     def parse(self, expression: str):
         if expression in ['exit']:
-            F.exit = True
+            F.launcher_exit = True
         else:
             print(f"echo {expression}")
 
