@@ -8,6 +8,7 @@ Global Argument Manager
 
 from typing import Any, Optional
 
+from hdfv.utils.config import config
 from hdfv.utils.pattern import Singleton
 
 
@@ -16,6 +17,9 @@ class Flags(Singleton):
     
     This is a Singleton Class
     """
+    def __init__(self):
+        self.init()
+
     def __setattr__(self, key: str, value: Any) -> None:
         super(Flags, self).__setattr__(key, value)
 
@@ -36,6 +40,10 @@ class Flags(Singleton):
     def set(self, key: str, value: Any) -> None:
         """Set the value of specified key"""
         self.__setattr__(key, value)
+
+    def init(self) -> None:
+        # Initial Definition
+        self.set("user_conf", config.user())
 
 
 flags = Flags()
