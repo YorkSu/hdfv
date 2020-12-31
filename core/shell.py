@@ -8,6 +8,8 @@ Interactive Shell for HDFV file
 
 import os
 
+import h5py
+
 from hdfv.core.parse.ampersand import and_parser
 from hdfv.core.parse.argument import argument_parser
 from hdfv.core.parse.cmd import command_parser
@@ -17,7 +19,9 @@ from hdfv.utils.parse import Parser
 
 class Shell(Parser):
     def __init__(self):
-        ...
+        F.hdfv = dict()
+        F.hdfv['h5'] = None
+        F.hdfv['pwd'] = ''
 
     def parse(self, expression: str) -> None:
         expressions = and_parser.parse(expression)
@@ -34,12 +38,15 @@ class Shell(Parser):
         if not os.path.exists(filename):
             print(f"Error: {filename} not found.")
             return
-        # open file
+        # F.h5 = h5py.File(filename, mode='a')
+        F.hdfv['h5'] = h5py.File(filename, mode='a')
+        F.hdfv['pwd'] = '/'
         F.shell_exit = False
         while not F.shell_exit:
             # before `#` is group name
-            expression = input("# ")
+            expression = input(f"{F.hdfv['pwd']}# ")
             self.parse(expression)
+        F.hdfv['h5'].close()  # close hdf5 file
 
 
 if __name__ == "__main__":
