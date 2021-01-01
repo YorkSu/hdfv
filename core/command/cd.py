@@ -28,13 +28,13 @@ class CdHdfv(Command):
             return response
 
         new_pwd = path.change(F.hdfv['pwd'], args[0])
-        code = path.is_group(F.hdfv['h5'], new_pwd)
-        if code == 200:
+        code = path.get_type(F.hdfv['h5'], new_pwd)
+        if code in [100, 101]:
             F.hdfv['pwd'] = new_pwd
+        elif code in [102, 400]:
+            response.message = f"cd: {args[0]}: Not directory"
         elif code == 404:
             response.message = f"cd: {args[0]}: No such directory"
-        elif code == 403:
-            response.message = f"cd: {args[0]}: Not directory"
 
         if response.message:
             print(response.message)

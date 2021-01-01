@@ -9,22 +9,28 @@ Functions that handles the path of hdf5
 import h5py
 
 
-def is_group(h5, path: str) -> int:
-    """Determine if the hdf5 path is Group
+def get_type(h5, path: str) -> int:
+    """Get the type of hdf5 path
     
     Returns:
         code: int
-        - 200, Successful
+        - 100, Hdf5 File
+        - 101, Hdf5 Group
+        - 102, Hdf5 Dataset
+        - 400, Unknown Error
         - 404, Not Found
-        - 403, Permission denied 
     """
     try:
         temp = h5[path]
-        if not isinstance(temp, h5py.Group):
-            return 403
+        if isinstance(temp, h5py.File):
+            return 100
+        if isinstance(temp, h5py.Group):
+            return 101
+        if isinstance(temp, h5py.Dataset):
+            return 102
     except Exception:
         return 404
-    return 200
+    return 400
 
 
 def is_win_abs(path: str) -> bool:

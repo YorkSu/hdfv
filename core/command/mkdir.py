@@ -24,9 +24,11 @@ class MkdirHdfv(Command):
             response.message = "mkdir: missing operand"
         else:
             new_group = path.change(F.hdfv['pwd'], args[0])
-            code = path.is_group(F.hdfv['h5'], new_group)
-            if code in [200, 403]:
+            code = path.get_type(F.hdfv['h5'], new_group)
+            if code in [100, 101, 102]:
                 response.message = f"mkdir: cannot create directory ‘{args[0]}’: File exists"
+            elif code == 400:
+                response.message = f"mkdir: unknown error: {args[0]}"
             elif code == 404:
                 F.hdfv['h5'].create_group(new_group)
 
