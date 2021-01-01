@@ -6,10 +6,6 @@ Interactive Shell for HDFV file
 """
 
 
-import os
-
-import h5py
-
 from hdfv.core.parse.ampersand import and_parser
 from hdfv.core.parse.argument import argument_parser
 from hdfv.core.parse.cmd import command_parser
@@ -34,22 +30,17 @@ class Shell(Parser):
                 continue
             response = command.execute(*args, **kwargs)
 
-    def start(self, filename: str) -> None:
-        if not os.path.exists(filename):
-            print(f"Error: {filename} not found.")
-            return
-        # F.h5 = h5py.File(filename, mode='a')
-        F.hdfv['h5'] = h5py.File(filename, mode='a')
+    def start(self) -> None:
         F.hdfv['pwd'] = '/'
         F.shell_exit = False
         while not F.shell_exit:
-            # before `#` is group name
             expression = input(f"{F.hdfv['pwd']}# ")
             self.parse(expression)
-        F.hdfv['h5'].close()  # close hdf5 file
+
+
+shell = Shell()
 
 
 if __name__ == "__main__":
-    shell = Shell()
     shell.start('sample/mlp.h5')
 
