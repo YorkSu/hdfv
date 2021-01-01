@@ -41,7 +41,7 @@ class VersionCommand(Command):
             response.message += f" [Latest {latest}]"
         else:
             response.code = 417
-            response.message = f"[VERSION] Invalid count: {count}"
+            response.message = f"version: count {count} invalid"
         
         print(response.message)
 
