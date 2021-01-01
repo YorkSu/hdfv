@@ -20,13 +20,16 @@ class Shell(Parser):
         F.hdfv['pwd'] = ''
 
     def parse(self, expression: str) -> None:
+        expression = expression.strip()
+        if not expression:
+            return
         expressions = and_parser.parse(expression)
-        for expression in expressions:
-            command = command_parser.parse(expression)
-            args, kwargs = argument_parser.parse(expression)
+        for exp in expressions:
+            command = command_parser.parse(exp)
+            args, kwargs = argument_parser.parse(exp)
             if command is None:
                 print("Invalid Command: "
-                     f"{command_parser.name(expression)}")
+                     f"{command_parser.name(exp)}")
                 continue
             response = command.execute(*args, **kwargs)
 
@@ -42,5 +45,7 @@ shell = Shell()
 
 
 if __name__ == "__main__":
-    shell.start('sample/mlp.h5')
+    import h5py
+    F.hdfv['h5'] = h5py.File('sample/mlp.h5', mode='a')
+    shell.start()
 
