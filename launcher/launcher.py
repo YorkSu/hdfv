@@ -13,6 +13,7 @@ import h5py
 from hdfv.core.parse.argument import argument_parser
 from hdfv.core.shell import shell
 from hdfv.utils.flag import flags as F
+from hdfv.utils import path
 from hdfv.utils.parse import Parser
 
 
@@ -35,7 +36,7 @@ class Launcher(Parser):
         
     def parse(self, expression: str) -> None:
         expression = expression.strip()
-        if not expression:
+        if not expression:  # empty expression
             return
 
         command = expression.split(' ', 1)[0].upper()
@@ -45,20 +46,19 @@ class Launcher(Parser):
         elif command in ['OPEN', 'O']:
             expressions = expression.split(' ')
             if len(expressions) == 1:
-                print(f"open: file name must be given")
+                print("open: file name must be given")
             else:
-                filename = expressions[1]
+                filename = path.to_related(expressions[1])
                 # process arguments
                 if not os.path.exists(filename):
                     print(f"open: {filename} not found.")
-                else:
-                    try:
-                        F.hdfv['h5'] = h5py.File(filename, mode='a')
-                    except Exception:
-                        print(f"open: {filename} failed")
-                        return
+                    return
+                try:
+                    F.hdfv['h5'] = h5py.File(filename, mode='a')
                     shell.start()
                     F.hdfv['h5'].close()  # close hdf5 file
+                except Exception:
+                    print(f"open: {filename} failed")
         elif command in ['ECHO']:
             print(f"echo {expression}")
         else:
