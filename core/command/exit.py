@@ -18,5 +18,7 @@ class ExitCommand(Command):
     """
     def execute(self, *args, **kwargs) -> Response:
         F.shell_exit = True
+        if args and args[0] in ['-c', '-C', '--complately']:
+            F.launcher_exit = True
         return Response()
 
